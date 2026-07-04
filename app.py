@@ -22,7 +22,15 @@ def index():
 
 @app.route("/productos")
 def productos():
-    return render_template("productos.html")
+    
+    conexion = conectar_db()
+    cursor = conexion.cursor()
+    cursor.execute("SELECT p.idproductos, p.nombre, p.precio, p.stock_actual, c.nombre AS categoria FROM productos AS p JOIN categorias AS c ON  p.idcategorias = c.idcategorias;")
+    lista_productos = cursor.fetchall()
+    cursor.close()
+    conexion.close()
+    
+    return render_template("productos.html", productos = lista_productos)
 
 @app.route("/productos/crear", methods=["GET", "POST"])
 def registrar_producto():
