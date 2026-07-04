@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Producto</title>
+</head>
+<body>
+    <div class="container">
+        <header><h1>Agregar producto</h1></header>
+
+        <main>
+            <form method="POST">
+                <label for="nombre_producto">Introduce el nombre del producto</label>
+                <input type="text" name="nombre_producto" id="nombre_producto" required>
+                <br>
+
+                <label for="precio_producto">Intro duce el precio del producto</label>
+                <input type="number" name="precio_producto" id="precio_producto" placeholder="Introduce el precio" required>
+                <br>
+
+                <label for="stok_actual_producto">Ingrese el stock actual del producto</label>
+                <input type="number" name="stok_actual_producto" id="stok_actual_producto" min="0" placeholder="Cantidad actual del producto">
+                <br>
+
+                <label for="stok_minimo_producto">Ingrese el stock mínimo para ser notificado</label>
+                <input type="number" name="stok_minimo_producto" id="stok_minimo_producto" required placeholder="Mínima cantidad de producto para ser notificado">
+                <br>
+
+                <label for="idcategorias">Categorías</label>
+                <select name="idcategorias" id="idcategorias" required>
+                    <option value="" disabled selected>Seleccioná una categoría</option>
+                    {% for cat in categorias %}
+                        <option value="{{cat.idcategorias}}">{{cat.nombre}}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit">Guardar</button>
+
+
+            </form>
+        </main>
+    </div>
+</body>
+</html>
