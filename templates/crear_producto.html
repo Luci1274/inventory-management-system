@@ -10,7 +10,7 @@
         <header><h1>Agregar producto</h1></header>
 
         <main>
-            <form method="POST">
+            <form action="/productos/crear" method="POST">
                 <label for="nombre_producto">Introduce el nombre del producto</label>
                 <input type="text" name="nombre_producto" id="nombre_producto" required>
                 <br>
@@ -34,8 +34,9 @@
                         <option value="{{cat.idcategorias}}">{{cat.nombre}}</option>
                     {% endfor %}
                 </select>
-
-                <button type="submit">Guardar</button>
+                <br>
+                
+                <button type="submit">Guardar nuevo producto</button>
 
 
             </form>

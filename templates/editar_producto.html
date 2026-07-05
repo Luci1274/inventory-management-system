@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modificar producto</title>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Modificar Producto</h1>
+            <p>Los valores mostrados son los actuales del producto.</p>
+        </header>
+
+        <form action="/productos/editar/{{ producto[0] }}" method="POST">
+            <input type="hidden" name="id_producto" value="{{ producto[0] }}">
+
+            <label for="nombre_producto">Introduce el nombre del producto</label>
+            <input type="text" name="nombre_producto" id="nombre_producto" value="{{producto[1]}}" required>
+            <br>
+
+            <label for="precio_producto">Intro duce el precio del producto</label>
+            <input type="number" name="precio_producto" id="precio_producto" placeholder="Introduce el precio" value="{{producto[2]}}" required>
+            <br>
+
+            <label for="stok_actual_producto">Ingrese el stock actual del producto</label>
+            <input type="number" name="stok_actual_producto" id="stok_actual_producto" min="0" placeholder="Cantidad actual del producto" value="{{producto[3]}}" required>
+            <br>
+
+            <label for="stok_minimo_producto">Ingrese el stock mínimo para ser notificado</label>
+            <input type="number" name="stok_minimo_producto" id="stok_minimo_producto" placeholder="Mínima cantidad de producto para ser notificado" value="{{producto[4]}}" required>
+            <br>
+
+            <label for="idcategorias">Categorías</label>
+            <select name="idcategorias" id="idcategorias" required>
+                {% for cat in categorias %}
+                    <option value="{{cat[0]}}" {% if cat[0] == producto[5] %} selected {% endif %}>
+                        {{cat[1]}}
+                    </option>
+                {% endfor %}
+            </select>
+            <br>
+
+            <button type="submit">Actualizar producto</button>
+        </form>
+    </div>
+</body>
+</html>
