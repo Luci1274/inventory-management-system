@@ -18,7 +18,7 @@ USE `Gestion_stock` ;
 -- Table `Gestion_stock`.`categorias`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Gestion_stock`.`categorias` (
-  `idcategorias` INT NOT NULL,
+  `idcategorias` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`idcategorias`))
 ENGINE = InnoDB;
@@ -28,7 +28,7 @@ ENGINE = InnoDB;
 -- Table `Gestion_stock`.`productos`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Gestion_stock`.`productos` (
-  `idproductos` INT NOT NULL,
+  `idproductos` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
   `precio` DECIMAL(10,2) NULL,
   `stock_actual` INT NOT NULL,
@@ -48,7 +48,7 @@ ENGINE = InnoDB;
 -- Table `Gestion_stock`.`usuarios`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Gestion_stock`.`usuarios` (
-  `idusuarios` INT NOT NULL,
+  `idusuarios` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NULL,
   `password` VARCHAR(255) NOT NULL,
@@ -61,7 +61,7 @@ ENGINE = InnoDB;
 -- Table `Gestion_stock`.`movimientos_stock`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Gestion_stock`.`movimientos_stock` (
-  `idmovimientos_stock` INT NOT NULL,
+  `idmovimientos_stock` INT NOT NULL AUTO_INCREMENT,
   `idproductos` INT NOT NULL,
   `idusuarios` INT NOT NULL,
   `cantidad` INT NULL,

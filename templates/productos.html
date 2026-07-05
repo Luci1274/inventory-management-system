@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de productos</title>
+</head>
+<body>
+    <div class="container">
+        <header><h1>Listado de productos</h1></header>
+        <main>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Precio</th>
+                        <th>Stock actual</th>
+                        <th>Categoría</th> 
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for producto in productos%}
+                        <tr>
+                            <td>{{producto.nombre}}</td>
+                            <td>{{producto.precio}}</td>
+                            <td>{{producto.stock_actual}}</td>
+                            <td>{{producto.categoria}}</td>
+                            <td>
+                                <a href="/productos/editar/{{producto.idproductos}}">Editar</a>
+                                <a href="/productos/eliminar/{{producto.idproductos}}">Eliminar</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="opciones">
+                <button><a href="/productos/crear">Ingresar nuevo producto</a></button>
+                <button><a href="/productos/crear/categoria">Ingresar una nueva categoría</a></button>
+            </div>
+
+        </main>
+    </div>
+</body>
+</html>
