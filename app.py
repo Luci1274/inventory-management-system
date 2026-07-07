@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, session, flash, jso
 from modulos.conexion import conectar_db
 from modulos.comandos_db_producto import sql_leer_productos, sql_leer_producto, sql_leer_categorias, sql_crear_producto, sql_crear_categoria, sql_actualizar_producto, sql_eliminar_producto
 from modulos.comandos_db_usuario import sql_leer_usuarios, sql_leer_usuario, sql_crear_usuario, sql_actualizar_usuario, sql_eliminar_usuario, sql_verificar_usuario
-
+from modulos.comandos_db_alerta import sql_alertar_stock
 
 app = Flask(__name__)
 app.secret_key = "una_clave_secreta_y_segura_aqui"
@@ -38,7 +38,12 @@ def test_conexion():
 # ---------------------------------------------------------------------------------------------
 @app.route("/")
 def index():
-    return render_template("index.html")
+    listado_productos_bajos = sql_alertar_stock()
+    if listado_productos_bajos:
+        flash("Productos bajos en stock", "warning" )
+    else:
+        flash("No hay productos con stock bajo", "ok")
+    return render_template("index.html", productos = listado_productos_bajos)
 
 # ---------------------------------------------------------------------------------------------
 # Login, administración de usuarios y registro de estos
@@ -181,6 +186,15 @@ def editar_producto(id):
 def eliminar_producto(id):
     sql_eliminar_producto(id)
     return redirect("/productos")
+
+# ---------------------------------------------------------------------------------------------
+# Historial de movimientos
+# ---------------------------------------------------------------------------------------------
+@app.route("/historial_movimiento")
+def listado_historial():
+
+    listado_historial = sql_leer_movimientos()
+    return render_template("historial_movimiento.html", movimientos = listado_historial)
 
 
 if __name__ == "__main__":
