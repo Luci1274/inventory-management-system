@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cloudflare.com">
+
+    <title>Crear usuario</title>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Agregar usuario</h1>
+        </header>
+
+        <main>
+            <button><a href="/usuarios"><i class="fa-solid fa-arrow-left"></i> Regresar</a></button>
+            
+            <form action="/usuarios/crear" method="POST">
+                <label for="nombre_usuario">Introduce el nombre del usuario</label>
+                <input type="text" name="nombre_usuario" id="nombre_usuario" required>
+                <br>
+
+                <label for="mail_usuario">Ingrese el mail del usuario</label>
+                <input type="number" name="mail_usuario" id="mail_usuario" min="0" placeholder="Ingrese el mail del usuario">
+                <br>
+
+                <label for="contraseña_usuario">Ingrese la contraseña del usuario</label>
+                <input type="password" name="contraseña_usuario" id="contraseña_usuario" placeholder="Introduce la contraseña del usuario" required>
+                <br>
+
+                <label for="rol_usuario">Rol del usuario</label>
+                <select name="rol_usuario" id="rol_usuario" required>
+                    <option value="" disabled selected>Selecciona un rol</option>
+                    <option value="operario">Operario</option>
+                    <option value="admin">Administrador</option>
+                </select>
+                <br>
+                
+                <button type="submit">Guardar nuevo usuario</button>
+
+            </form>
+        </main>
+    </div>
+</body>
+</html>

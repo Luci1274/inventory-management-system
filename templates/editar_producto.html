@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cloudflare.com">
     <title>Modificar producto</title>
 </head>
 <body>
@@ -11,39 +12,51 @@
             <h1>Modificar Producto</h1>
             <p>Los valores mostrados son los actuales del producto.</p>
         </header>
-        
+        <main>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div style="color: red; margin-bottom: 15px; font-weight: bold;">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
 
-        <form action="" method="POST">
-            <input type="hidden" name="id_producto" value="{{ producto.idproductos }}">
+            <button><a href="/productos"><i class="fa-solid fa-arrow-left"></i> Regresar</a></button>
 
-            <label for="nombre_producto">Introduce el nombre del producto</label>
-            <input type="text" name="nombre_producto" id="nombre_producto" value="{{producto.nombre}}" required>
-            <br>
+            <form action="" method="POST">
+                <input type="hidden" name="id_producto" value="{{ producto.idproductos }}">
 
-            <label for="precio_producto">Intro duce el precio del producto</label>
-            <input type="number" name="precio_producto" id="precio_producto" placeholder="Introduce el precio" value="{{producto.precio}}" required>
-            <br>
+                <label for="nombre_producto">Introduce el nombre del producto</label>
+                <input type="text" name="nombre_producto" id="nombre_producto" value="{{producto.nombre}}" required>
+                <br>
 
-            <label for="stok_actual_producto">Ingrese el stock actual del producto</label>
-            <input type="number" name="stok_actual_producto" id="stok_actual_producto" min="0" placeholder="Cantidad actual del producto" value="{{producto.stock_actual}}" required>
-            <br>
+                <label for="precio_producto">Intro duce el precio del producto</label>
+                <input type="number" name="precio_producto" id="precio_producto" placeholder="Introduce el precio" value="{{producto.precio}}" required>
+                <br>
 
-            <label for="stok_minimo_producto">Ingrese el stock mínimo para ser notificado</label>
-            <input type="number" name="stok_minimo_producto" id="stok_minimo_producto" placeholder="Mínima cantidad de producto para ser notificado" value="{{producto.stock_minimo}}" required>
-            <br>
+                <label for="stok_actual_producto">Ingrese el stock actual del producto</label>
+                <input type="number" name="stok_actual_producto" id="stok_actual_producto" min="0" placeholder="Cantidad actual del producto" value="{{producto.stock_actual}}" required>
+                <br>
 
-            <label for="idcategorias">Categorías</label>
-            <select name="idcategorias" id="idcategorias" required>
-                {% for cat in categorias %}
-                    <option value="{{cat.idcategorias}}" {% if cat.idcategorias == producto.idcategorias %} selected {% endif %}>
-                        {{cat.nombre}}
-                    </option>
-                {% endfor %}
-            </select>
-            <br>
+                <label for="stok_minimo_producto">Ingrese el stock mínimo para ser notificado</label>
+                <input type="number" name="stok_minimo_producto" id="stok_minimo_producto" placeholder="Mínima cantidad de producto para ser notificado" value="{{producto.stock_minimo}}" required>
+                <br>
 
-            <button type="submit">Actualizar producto</button>
-        </form>
+                <label for="idcategorias">Categorías</label>
+                <select name="idcategorias" id="idcategorias" required>
+                    {% for cat in categorias %}
+                        <option value="{{cat.idcategorias}}" {% if cat.idcategorias == producto.idcategorias %} selected {% endif %}>
+                            {{cat.nombre}}
+                        </option>
+                    {% endfor %}
+                </select>
+                <br>
+
+                <button type="submit">Actualizar producto</button>
+            </form>
+        </main>
     </div>
 </body>
 </html>

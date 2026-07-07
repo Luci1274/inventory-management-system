@@ -1,5 +1,5 @@
 from modulos.conexion import conectar_db
-
+#-------------------------------------------------------------------
 def sql_leer_productos():
     """Lee la tabla de productos y devuele el listado"""
     conexion = conectar_db()
@@ -10,7 +10,7 @@ def sql_leer_productos():
     cursor.close()
     conexion.close()
     return lista_productos
-
+#-------------------------------------------------------------------
 def sql_leer_producto(id):
     conexion = conectar_db()
     cursor = conexion.cursor()
@@ -21,7 +21,7 @@ def sql_leer_producto(id):
     cursor.close()
     conexion.close()
     return producto
-
+#-------------------------------------------------------------------
 def sql_leer_categorias():
     """Lee la tabla de cateogias y devuelve el listado"""
     conexion = conectar_db()
@@ -33,7 +33,7 @@ def sql_leer_categorias():
     cursor.close()
     conexion.close()
     return lista_categorias
-
+#-------------------------------------------------------------------
 def sql_crear_producto(nombre_producto, precio_producto, stok_actual_producto, stok_minimo_producto, categoria_producto):
     """Registra un nuevo producto"""
     conexion = conectar_db()
@@ -45,7 +45,19 @@ def sql_crear_producto(nombre_producto, precio_producto, stok_actual_producto, s
     conexion.commit()
     cursor.close()
     conexion.close()
+#------------------------------------------------------------------- 
+def sql_crear_categoria(categoria):
+    conexion = conectar_db()
+    cursor = conexion.cursor()
     
+    sql = "INSERT INTO categorias (nombre) VALUES (%s)"
+    valor = (categoria)
+    cursor.execute(sql, valor)
+    conexion.commit()
+    
+    cursor.close()
+    conexion.close()
+#-------------------------------------------------------------------   
 def sql_actualizar_producto(nombre_producto, precio_producto, stok_actual_producto, stok_minimo_producto, categoria_producto, id):
     conexion = conectar_db()
     cursor = conexion.cursor()
@@ -63,7 +75,7 @@ def sql_actualizar_producto(nombre_producto, precio_producto, stok_actual_produc
         conexion.close()
         print("❌ ERROR EN UPDATE:", e)
         return False
-
+#-------------------------------------------------------------------
 def sql_eliminar_producto(id):
     conexion = conectar_db()
     cursor = conexion.cursor()
@@ -76,3 +88,4 @@ def sql_eliminar_producto(id):
         conexion.rollback()
     cursor.close()
     conexion.close()
+#-------------------------------------------------------------------

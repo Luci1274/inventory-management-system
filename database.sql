@@ -20,7 +20,8 @@ USE `Gestion_stock` ;
 CREATE TABLE IF NOT EXISTS `Gestion_stock`.`categorias` (
   `idcategorias` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`idcategorias`))
+  PRIMARY KEY (`idcategorias`),
+  UNIQUE INDEX `nombre_UNIQUE` (`nombre` ASC) VISIBLE)
 ENGINE = InnoDB;
 
 

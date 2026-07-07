@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <title>Modificar usuario</title>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Modificar Usuario</h1>
+            <p>Los valores mostrados son los actuales del usuarios, a excepción de la contraseña</p>
+        </header>
+        <main>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div style="color: red; margin-bottom: 15px; font-weight: bold;">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <button><a href="/usuarios"><i class="fa-solid fa-arrow-left"></i> Regresar</a></button>
+
+            <form action="" method="POST">
+                <input type="hidden" name="id_usuario" value="{{ usuario.idusuarios }}">
+
+                <label for="nombre_usuario">Nombre de Usuario:</label>
+                <input type="text" name="nombre_usuario" id="nombre_usuario" value="{{ usuario.nombre }}" required>
+                <br>
+
+                <label for="mail_usuario">Email:</label>
+                <input type="email" name="mail_usuario" id="mail_usuario" value="{{ usuario.email }}" required>
+                <br>
+
+                <label for="contraseña_usuario">Nueva Contraseña:</label>
+                <input type="password" name="contraseña_usuario" id="contraseña_usuario" placeholder="Dejar en blanco para mantener la actual">
+                <br>
+
+                <label for="rol_usuario">Rol:</label>
+                <select name="rol_usuario" id="rol_usuario" required>
+                    <option value="operario" {% if usuario.rol == 'operario' %} selected {% endif %}>Operario</option>
+                    <option value="admin" {% if usuario.rol == 'admin' %} selected {% endif %}>Administrador</option>
+                </select>
+                <br>
+
+                <button type="submit">Guardar Cambios</button>
+            </form>
+        </main>
+    </div>
+</body>
+</html>
