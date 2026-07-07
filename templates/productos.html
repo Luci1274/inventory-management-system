@@ -9,6 +9,10 @@
     <div class="container">
         <header><h1>Listado de productos</h1></header>
         <main>
+            <div class="opciones">
+                <button><a href="/productos/crear">Ingresar nuevo producto</a></button>
+                <button><a href="/productos/crear/categoria">Ingresar una nueva categoría</a></button>
+            </div>
             <table>
                 <thead>
                     <tr>
@@ -34,10 +38,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <div class="opciones">
-                <button><a href="/productos/crear">Ingresar nuevo producto</a></button>
-                <button><a href="/productos/crear/categoria">Ingresar una nueva categoría</a></button>
-            </div>
+            
 
         </main>
     </div>
