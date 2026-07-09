@@ -6,7 +6,7 @@ def sql_leer_usuarios():
     conexion = conectar_db()
     cursor = conexion.cursor()
     
-    cursor.execute("SELECT idusuarios, nombre,  email, rol FROM usuarios")
+    cursor.execute("SELECT idusuarios, nombre,  email, rol FROM usuarios WHERE activo = 1;")
     lista_usuarios = cursor.fetchall()
     
     cursor.close()
@@ -33,7 +33,7 @@ def sql_crear_usuario(nombre_usuario, contraseña_usuario, mail_usuario, rol_usu
     """Hasear contraseña"""
     contraseña_haseada = generate_password_hash(contraseña_usuario)
     
-    sql = "INSERT INTO usuarios (nombre, email, password, rol) VALUES (%s, %s, %s, %s)"
+    sql = "INSERT INTO usuarios (nombre, email, password, rol) VALUES (%s, %s, %s, %s);"
     valores = (nombre_usuario, mail_usuario, contraseña_haseada, rol_usuario)
     cursor.execute(sql, valores)
     conexion.commit()
@@ -77,7 +77,7 @@ def sql_eliminar_usuario(id):
     cursor = conexion.cursor()
     """Intenta borrar el usuario seleccionado"""
     try:    
-        cursor.execute("DELETE FROM usuarios WHERE idusuarios = %s;", (id,))
+        cursor.execute("UPDATE usuarios SET activo = 0 WHERE idusuarios = %s;", (id,))
         conexion.commit()
     except Exception as e:
         """En el caso de haber un error deshace los cambios"""
@@ -87,7 +87,7 @@ def sql_eliminar_usuario(id):
 #-------------------------------------------------------------------
 def sql_verificar_usuario(nombre_ingresado, password_ingresada):
     conexion = conectar_db()
-    cursor = conexion.cursor
+    cursor = conexion.cursor()
     
     # 1. Buscamos al usuario únicamente por su nombre
     cursor.execute("SELECT idusuarios, nombre, password, rol FROM usuarios WHERE nombre = %s;", (nombre_ingresado,))

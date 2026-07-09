@@ -5,7 +5,7 @@ def sql_leer_productos():
     conexion = conectar_db()
     cursor = conexion.cursor()
     
-    cursor.execute("SELECT p.idproductos, p.nombre, p.precio, p.stock_actual, c.nombre AS categoria FROM productos AS p JOIN categorias AS c ON  p.idcategorias = c.idcategorias;")
+    cursor.execute("SELECT p.idproductos, p.nombre, p.precio, p.stock_actual, c.nombre AS categoria FROM productos AS p JOIN categorias AS c ON  p.idcategorias = c.idcategorias WHERE activo = 1;")
     lista_productos = cursor.fetchall()
     cursor.close()
     conexion.close()
@@ -43,15 +43,17 @@ def sql_crear_producto(nombre_producto, precio_producto, stok_actual_producto, s
     valores = (nombre_producto, precio_producto, stok_actual_producto, stok_minimo_producto, categoria_producto)
     cursor.execute(sql, valores)
     conexion.commit()
+    id_nuevo_producto = cursor.lastrowid()
     cursor.close()
     conexion.close()
+    return id_nuevo_producto
 #------------------------------------------------------------------- 
 def sql_crear_categoria(categoria):
     conexion = conectar_db()
     cursor = conexion.cursor()
     
     sql = "INSERT INTO categorias (nombre) VALUES (%s)"
-    valor = (categoria)
+    valor = (categoria,)
     cursor.execute(sql, valor)
     conexion.commit()
     
@@ -81,7 +83,7 @@ def sql_eliminar_producto(id):
     cursor = conexion.cursor()
     """Intenta borrar el producto seleccionado"""
     try:    
-        cursor.execute("DELETE FROM productos WHERE idproductos = %s;", (id,))
+        cursor.execute("UPADATE productos SET activo = 0 WHERE idproductos = %s;", (id,))
         conexion.commit()
     except Exception as e:
         """En el caso de haber un error deshace los cambios"""

@@ -35,7 +35,8 @@ CREATE TABLE IF NOT EXISTS `Gestion_stock`.`productos` (
   `stock_actual` INT NOT NULL,
   `stock_minimo` INT NULL,
   `idcategorias` INT NOT NULL,
-  PRIMARY KEY (`idproductos`, `idcategorias`),
+  `activo` TINYINT NOT NULL DEFAULT 1,
+  PRIMARY KEY (`idproductos`),
   INDEX `fk_productos_categorias_idx` (`idcategorias` ASC) VISIBLE,
   CONSTRAINT `fk_productos_categorias`
     FOREIGN KEY (`idcategorias`)
@@ -54,6 +55,7 @@ CREATE TABLE IF NOT EXISTS `Gestion_stock`.`usuarios` (
   `email` VARCHAR(45) NULL,
   `password` VARCHAR(255) NOT NULL,
   `rol` VARCHAR(45) NOT NULL,
+  `activo` TINYINT NOT NULL DEFAULT '1',
   PRIMARY KEY (`idusuarios`))
 ENGINE = InnoDB;
 
@@ -68,7 +70,7 @@ CREATE TABLE IF NOT EXISTS `Gestion_stock`.`movimientos_stock` (
   `cantidad` INT NULL,
   `tipo_movimiento` VARCHAR(45) NOT NULL,
   `fecha_hora` DATETIME NOT NULL,
-  PRIMARY KEY (`idmovimientos_stock`, `idproductos`, `idusuarios`),
+  PRIMARY KEY (`idmovimientos_stock`),
   INDEX `fk_movimientos_stock_productos1_idx` (`idproductos` ASC) VISIBLE,
   INDEX `fk_movimientos_stock_usuarios1_idx` (`idusuarios` ASC) VISIBLE,
   CONSTRAINT `fk_movimientos_stock_productos1`
