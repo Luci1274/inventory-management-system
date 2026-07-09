@@ -87,7 +87,7 @@ def sql_eliminar_usuario(id):
 #-------------------------------------------------------------------
 def sql_verificar_usuario(nombre_ingresado, password_ingresada):
     conexion = conectar_db()
-    cursor = conexion.cursor
+    cursor = conexion.cursor()
     
     # 1. Buscamos al usuario únicamente por su nombre
     cursor.execute("SELECT idusuarios, nombre, password, rol FROM usuarios WHERE nombre = %s;", (nombre_ingresado,))

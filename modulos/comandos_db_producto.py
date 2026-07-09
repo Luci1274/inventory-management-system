@@ -53,7 +53,7 @@ def sql_crear_categoria(categoria):
     cursor = conexion.cursor()
     
     sql = "INSERT INTO categorias (nombre) VALUES (%s)"
-    valor = (categoria)
+    valor = (categoria,)
     cursor.execute(sql, valor)
     conexion.commit()
     
@@ -83,7 +83,7 @@ def sql_eliminar_producto(id):
     cursor = conexion.cursor()
     """Intenta borrar el producto seleccionado"""
     try:    
-        cursor.execute("UPADATE productos SET activo = 0 productos WHERE idproductos = %s;", (id,))
+        cursor.execute("UPADATE productos SET activo = 0 WHERE idproductos = %s;", (id,))
         conexion.commit()
     except Exception as e:
         """En el caso de haber un error deshace los cambios"""
