@@ -60,19 +60,21 @@ def sql_crear_categoria(categoria):
     cursor.close()
     conexion.close()
 #-------------------------------------------------------------------   
-def sql_actualizar_producto(nombre_producto, precio_producto, stok_actual_producto, stok_minimo_producto, categoria_producto, id):
+def sql_actualizar_producto(nombre_producto, precio_producto, stok_minimo_producto, categoria_producto, id):
     conexion = conectar_db()
     cursor = conexion.cursor()
     
     try:
-        cursor.execute("UPDATE productos SET nombre = %s, precio = %s, stock_actual = %s, stock_minimo = %s, idcategorias = %s WHERE idproductos = %s;", (nombre_producto, precio_producto, stok_actual_producto, stok_minimo_producto, categoria_producto, id))
+        cursor.execute("UPDATE productos SET nombre = %s, precio = %s, stock_minimo = %s, idcategorias = %s WHERE idproductos = %s;", (nombre_producto, precio_producto, stok_minimo_producto, categoria_producto, id))
         conexion.commit()
+        
         cursor.close()
         conexion.close()
         return True
     except Exception as e:
         """En el caso de haber un error deshace los cambios"""
         conexion.rollback()
+        
         cursor.close()
         conexion.close()
         print("❌ ERROR EN UPDATE:", e)
@@ -91,3 +93,46 @@ def sql_eliminar_producto(id):
     cursor.close()
     conexion.close()
 #-------------------------------------------------------------------
+def sql_aumentar_cantidad(id, cantidad_a_sumar):
+    conexion = conectar_db()
+    cursor = conexion.cursor()
+    
+    try:
+        sql = ("UPDATE productos SET stock_actual = stock_actual + %s WHERE idproductos = %s;")
+        valores = (cantidad_a_sumar, id)
+        cursor.execute(sql, valores)
+        conexion.commit()
+        
+        cursor.close()
+        conexion.close()
+        return True
+    except Exception as e:
+        """En el caso de haber un error deshace los cambios"""
+        conexion.rollback()
+        
+        cursor.close()
+        conexion.close()
+        print("❌ ERROR EN UPDATE:", e)
+        return False
+#-------------------------------------------------------------------
+def sql_decrementar_cantidad(id, cantidad_a_restar):
+    conexion = conectar_db()
+    cursor = conexion.cursor()
+    
+    try:
+        sql = ("UPDATE productos SET stock_actual = stock_actual - %s WHERE idproductos = %s;")
+        valores = (cantidad_a_restar, id)
+        cursor.execute(sql, valores)
+        conexion.commit()
+        
+        cursor.close()
+        conexion.close()
+        return True
+    except Exception as e:
+        """En el caso de haber un error deshace los cambios"""
+        conexion.rollback()
+        
+        cursor.close()
+        conexion.close()
+        print("❌ ERROR EN UPDATE:", e)
+        return False        

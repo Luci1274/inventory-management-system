@@ -11,36 +11,7 @@
             <h1>Index - Panel de Control</h1>
         </header>
 
-        {% with mensajes = get_flashed_messages(with_categories=true) %}
-            {% if mensajes %}
-                <ul>
-                    {% for categoria, mensaje in mensajes %}
-                        <li class="alert alert-{{ categoria }}" style="color: {% if categoria == 'warning' %} red {% else %} green {% endif %}; font-weight: bold;">
-                            {{ mensaje }}
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
-
-        {% if productos %}
-            <div class="tabla" style="margin-top: 20px; border: 1px solid #ccc; padding: 10px;">
-                <h3 style="color: red;">Listado de Productos Críticos</h3>
-                <div class="fila" style="display: flex; font-weight: bold; gap: 20px;">
-                    <div class="cabecera">Nombre producto</div>
-                    <div class="cabecera">Stock actual</div>
-                    <div class="cabecera">Categoría</div>
-                </div>
-                
-                {% for producto in productos %}
-                <div class="fila" style="display: flex; gap: 20px; margin-top: 5px;">
-                    <div>{{ producto.nombre }}</div>
-                    <div>{{ producto.stock_actual }}</div>
-                    <div>{{ producto.categoria }}</div>
-                </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+        {% include "componentes/tabla_aviso_stock_bajo.html" %}
 
         <br><br>
         <main>

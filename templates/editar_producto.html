@@ -13,15 +13,7 @@
             <p>Los valores mostrados son los actuales del producto.</p>
         </header>
         <main>
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div style="color: red; margin-bottom: 15px; font-weight: bold;">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
+            {% include "componentes/aviso.html" %}
 
             <button><a href="/productos"><i class="fa-solid fa-arrow-left"></i> Regresar</a></button>
 
@@ -36,8 +28,8 @@
                 <input type="number" name="precio_producto" id="precio_producto" placeholder="Introduce el precio" value="{{producto.precio}}" required>
                 <br>
 
-                <label for="stok_actual_producto">Ingrese el stock actual del producto</label>
-                <input type="number" name="stok_actual_producto" id="stok_actual_producto" min="0" placeholder="Cantidad actual del producto" value="{{producto.stock_actual}}" required>
+                <label for="stok_actual_producto">Stock actual del producto</label>
+                <input type="number" name="stok_actual_producto" id="stok_actual_producto" readonly value="{{producto.stock_actual}}" required>
                 <br>
 
                 <label for="stok_minimo_producto">Ingrese el stock mínimo para ser notificado</label>

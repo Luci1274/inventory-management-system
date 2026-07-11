@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial Movimiento</title>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Hisotrial movimientos</h1>
+            {% include "componentes/nav.html" %}
+        </header>
+        <main>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Tipo de movimiento</th>
+                        <th>Fecha y hora</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for movimiento in movimientos%}
+                        <tr>
+                            <td>{{movimiento.usuario}}</td>
+                            <td>{{movimiento.nombre_producto}}</td>
+                            <td>{{movimiento.cantidad}}</td>
+                            <td>{{movimiento.movimiento}}</td>
+                            <td>{{movimiento.fecha_hora}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </main>
+    </div>
+</body>
+</html>

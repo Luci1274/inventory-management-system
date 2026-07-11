@@ -62,11 +62,13 @@ Antes de ejecutar el proyecto, asegúrate de tener instalado:
 - MySQL Server
 - pip
 
-Además, instala las dependencias necesarias:
+Instala las dependencias del proyecto con:
 
 ```bash
-pip install flask pymysql
+pip install -r requirements.txt
 ```
+
+> Si usas un archivo `.env`, crea uno en la raíz del proyecto con las variables de conexión necesarias.
 
 ## Configuración de la base de datos
 

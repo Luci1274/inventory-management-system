@@ -5,7 +5,7 @@ def sql_leer_movimientos():
     conexion = conectar_db()
     cursor = conexion.cursor()
     
-    cursor.execute("SELECT p.nombre AS nombre_producto, u.nombre AS usuarios, m.cantidad, m.tipo_movimiento AS movimiento, m.fecha_hora FROM usuarios AS u JOIN movimientos_stock AS m ON u.idusuarios = m.idusuarios JOIN productos AS p ON m.idproductos = p.idproductos;")
+    cursor.execute("SELECT p.nombre AS nombre_producto, u.nombre AS usuario, m.cantidad, m.tipo_movimiento AS movimiento, m.fecha_hora FROM usuarios AS u JOIN movimientos_stock AS m ON u.idusuarios = m.idusuarios JOIN productos AS p ON m.idproductos = p.idproductos;")
     
     lista_movimientos = cursor.fetchall()
     cursor.close()
