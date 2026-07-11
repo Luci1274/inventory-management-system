@@ -84,13 +84,12 @@ def sql_eliminar_producto(id):
     conexion = conectar_db()
     cursor = conexion.cursor()
     """Intenta borrar el producto seleccionado"""
-    try:
+    try:    
         cursor.execute("UPDATE productos SET activo = 0 WHERE idproductos = %s;", (id,))
         conexion.commit()
     except Exception as e:
         """En el caso de haber un error deshace los cambios"""
         conexion.rollback()
-        print("❌ ERROR EN DELETE:", e)
     cursor.close()
     conexion.close()
 #-------------------------------------------------------------------
