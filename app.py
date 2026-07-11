@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, session, flash, jsonify
 from modulos.conexion import conectar_db
-from modulos.comandos_db_producto import sql_leer_productos, sql_leer_producto, sql_leer_categorias, sql_crear_producto, sql_crear_categoria, sql_actualizar_producto, sql_eliminar_producto
+from modulos.comandos_db_producto import sql_leer_productos, sql_leer_producto, sql_leer_categorias, sql_crear_producto, sql_crear_categoria, sql_actualizar_producto, sql_eliminar_producto, sql_aumentar_cantidad, sql_decrementar_cantidad
 from modulos.comandos_db_usuario import sql_leer_usuarios, sql_leer_usuario, sql_crear_usuario, sql_actualizar_usuario, sql_eliminar_usuario, sql_verificar_usuario
 from modulos.comandos_db_alerta import sql_alertar_stock, test_conexion
 from modulos.comandos_db_movimientos import sql_leer_movimientos, sql_crear_movimientos
@@ -178,12 +178,11 @@ def editar_producto(id):
         """Recibo los valores enviados por el formulario"""
         nombre_producto = request.form["nombre_producto"]
         precio_producto = request.form["precio_producto"]
-        stok_actual_producto = request.form["stok_actual_producto"]
         stok_minimo_producto = request.form["stok_minimo_producto"]
         categoria_producto = request.form["idcategorias"]
         
         """Ahora voy a actualizar los datos"""
-        if sql_actualizar_producto(nombre_producto, precio_producto, stok_actual_producto, stok_minimo_producto, categoria_producto, id) == True:
+        if sql_actualizar_producto(nombre_producto, precio_producto, stok_minimo_producto, categoria_producto, id) == True:
             id_producto = id
             id_usuario = session["usuario_id"]
             sql_crear_movimientos(id_producto, id_usuario, "MODIFICACIÓN", cantidad=None)
@@ -195,6 +194,50 @@ def editar_producto(id):
     lista_categorias = sql_leer_categorias()
     
     return render_template("editar_producto.html", producto = producto_devuelto, categorias = lista_categorias) 
+
+@app.route("/productos/aumentar/<int:id>")
+def aumentar_cantidad(id):
+    if request.form == "POST":
+        cantidad_a_sumar = request.form["nuevo_stock"]
+    
+        if sql_aumentar_cantidad(id, cantidad_a_sumar):
+            id_producto = id
+            id_usuario = session["usuario_id"]
+            sql_crear_movimientos(id_producto, id_usuario, "INGRESO", cantidad=cantidad_a_sumar)
+            return redirect("/productos")
+        else:
+            flash("Error al actualizar el producto", "error")
+    
+    producto_devuelto = sql_leer_producto(id)
+    return render_template("aumentar_cantidad.html", producto = producto_devuelto)
+    
+@app.route("/productos/decrementar/<int:id>")
+def decrementar_cantidad(id):
+    
+    producto_devuelto = sql_leer_producto(id)
+    
+    if request.form == "POST":
+        cantidad_a_restar = int(request.form["nuevo_stock"])
+        
+        if cantidad_a_restar > producto_devuelto["stock_actual"]:
+            flash(f"Error: No puedes retirar {cantidad_a_restar} unidades. El stock actual es de {producto_devuelto['stock_actual']}.", "error")
+            return render_template("decrementar_cantidad.html", producto = producto_devuelto)
+        
+        elif cantidad_a_restar <= 0:
+            flash("Error: La cantidad a retirar debe ser mayor a cero.", "error")
+            return render_template("decrementar_cantidad.html", producto = producto_devuelto)
+    
+        if sql_decrementar_cantidad(id, cantidad_a_restar):
+            id_producto = id
+            id_usuario = session["usuario_id"]
+            sql_crear_movimientos(id_producto, id_usuario, "EGRESO", cantidad=cantidad_a_restar)
+            return redirect("/productos")
+        else:
+            flash("Error al actualizar el producto", "error")
+    
+    
+    return render_template("decrementar_cantidad.html", producto = producto_devuelto)
+
 
 @app.route("/productos/eliminar/<int:id>")
 def eliminar_producto(id):
