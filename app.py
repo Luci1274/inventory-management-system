@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, session, flash, jso
 from modulos.conexion import conectar_db
 from modulos.comandos_db_producto import sql_leer_productos, sql_leer_producto, sql_leer_categorias, sql_crear_producto, sql_crear_categoria, sql_actualizar_producto, sql_eliminar_producto
 from modulos.comandos_db_usuario import sql_leer_usuarios, sql_leer_usuario, sql_crear_usuario, sql_actualizar_usuario, sql_eliminar_usuario, sql_verificar_usuario
-from modulos.comandos_db_alerta import sql_alertar_stock
+from modulos.comandos_db_alerta import sql_alertar_stock, test_conexion
 from modulos.comandos_db_movimientos import sql_leer_movimientos, sql_crear_movimientos
 
 app = Flask(__name__)
@@ -20,21 +20,6 @@ def proteger_rutas():
         return redirect("/iniciar_sesion")
 
 # ---------------------------------------------------------------------------------------------
-# Prueba de conexión de DB
-# ---------------------------------------------------------------------------------------------
-@app.route("/prueba_conexion")
-def test_conexion():
-    try:
-        conexion = conectar_db()
-        with conexion.cursor() as cursor:
-            cursor.execute("SELECT VERSION();")
-            version = cursor.fetchone()
-        conexion.close()
-        return f"¡Conectado con éxito! Versión de MySQL: {version[0]}"
-    except Exception as e:
-        return f"Error en la conexión: {e}"
-
-# ---------------------------------------------------------------------------------------------
 # Index = Menu principal
 # ---------------------------------------------------------------------------------------------
 @app.route("/")
@@ -44,6 +29,10 @@ def index():
         flash("Productos bajos en stock", "warning" )
     else:
         flash("No hay productos con stock bajo", "ok")
+    
+    if test_conexion == False:
+        return flash("Error al conectar con la base de datos", "warning")    
+    
     return render_template("index.html", productos = listado_productos_bajos)
 
 # ---------------------------------------------------------------------------------------------
@@ -79,6 +68,15 @@ def cerrar_sesion():
 @app.route("/usuarios")
 def listado_usuarios():
     lista_usuarios = sql_leer_usuarios()
+    
+    listado_productos_bajos = sql_alertar_stock()
+    if listado_productos_bajos:
+        flash("Productos bajos en stock", "warning" )
+    else:
+        flash("No hay productos con stock bajo", "ok")
+    
+    if test_conexion == False:
+        return flash("Error al conectar con la base de datos", "warning")    
     
     return render_template("usuarios.html", usuarios = lista_usuarios)
 
@@ -131,6 +129,15 @@ def eliminar_usuario(id):
 def listado_productos():
     
     lista_productos = sql_leer_productos()
+    
+    listado_productos_bajos = sql_alertar_stock()
+    if listado_productos_bajos:
+        flash("Productos bajos en stock", "warning" )
+    else:
+        flash("No hay productos con stock bajo", "ok")
+    
+    if test_conexion == False:
+        return flash("Error al conectar con la base de datos", "warning")    
     
     return render_template("productos.html", productos = lista_productos)
 
@@ -203,6 +210,9 @@ def eliminar_producto(id):
 # ---------------------------------------------------------------------------------------------
 @app.route("/historial_movimiento")
 def listado_historial():
+    
+    if test_conexion == False:
+        return flash("Error al conectar con la base de datos", "warning")    
 
     listado_historial = sql_leer_movimientos()
     return render_template("historial_movimiento.html", movimientos = listado_historial)

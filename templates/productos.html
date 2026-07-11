@@ -7,7 +7,10 @@
 </head>
 <body>
     <div class="container">
-        <header><h1>Listado de productos</h1></header>
+        <header>
+            <h1>Listado de productos</h1>
+            {% include "componentes/nav.html" %}
+        </header>
         <main>
             <div class="opciones">
                 <button><a href="/productos/crear">Ingresar nuevo producto</a></button>

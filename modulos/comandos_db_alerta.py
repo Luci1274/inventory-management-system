@@ -11,3 +11,14 @@ def sql_alertar_stock():
     cursor.close()
     conexion.close()
     return lista_productos_bajos
+#-------------------------------------------------------------------
+def test_conexion():
+    try:
+        conexion = conectar_db()
+        with conexion.cursor() as cursor:
+            cursor.execute("SELECT VERSION();")
+            version = cursor.fetchone()
+        conexion.close()
+        return True
+    except Exception as e:
+        return False
