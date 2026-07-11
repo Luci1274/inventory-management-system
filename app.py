@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect, session, flash, jsonify
-from modulos.conexion import conectar_db
 from modulos.comandos_db_producto import sql_leer_productos, sql_leer_producto, sql_leer_categorias, sql_crear_producto, sql_crear_categoria, sql_actualizar_producto, sql_eliminar_producto, sql_aumentar_cantidad, sql_decrementar_cantidad
 from modulos.comandos_db_usuario import sql_leer_usuarios, sql_leer_usuario, sql_crear_usuario, sql_actualizar_usuario, sql_eliminar_usuario, sql_verificar_usuario
 from modulos.comandos_db_alerta import sql_alertar_stock, test_conexion
@@ -7,6 +6,40 @@ from modulos.comandos_db_movimientos import sql_leer_movimientos, sql_crear_movi
 
 app = Flask(__name__)
 app.secret_key = "una_clave_secreta_y_segura_aqui"
+
+
+def _safe_int(field_name, default=0):
+    value = request.form.get(field_name, "")
+    if value is None:
+        return default
+    text = str(value).strip()
+    if text == "":
+        return default
+    try:
+        return int(text)
+    except (TypeError, ValueError):
+        return default
+
+
+def _safe_float(field_name, default=0.0):
+    value = request.form.get(field_name, "")
+    if value is None:
+        return default
+    text = str(value).strip()
+    if text == "":
+        return default
+    try:
+        return float(text)
+    except (TypeError, ValueError):
+        return default
+
+
+def _safe_text(field_name, default=""):
+    value = request.form.get(field_name, "")
+    if value is None:
+        return default
+    return str(value).strip()
+
 
 # ---------------------------------------------------------------------------------------------
 # 🛡️ GUARDIA DE SEGURIDAD (Control de Sesiones)
@@ -30,10 +63,11 @@ def index():
     else:
         flash("No hay productos con stock bajo", "ok")
     
-    if test_conexion == False:
-        return flash("Error al conectar con la base de datos", "warning")    
+    if not test_conexion():
+        flash("Error al conectar con la base de datos", "warning")
+        return render_template("index.html", productos_bajos = [])
     
-    return render_template("index.html", productos = listado_productos_bajos)
+    return render_template("index.html", productos_bajos = listado_productos_bajos)
 
 # ---------------------------------------------------------------------------------------------
 # Login, administración de usuarios y registro de estos
@@ -75,22 +109,26 @@ def listado_usuarios():
     else:
         flash("No hay productos con stock bajo", "ok")
     
-    if test_conexion == False:
-        return flash("Error al conectar con la base de datos", "warning")    
+    if not test_conexion():
+        flash("Error al conectar con la base de datos", "warning")
+        return render_template("usuarios.html", usuarios = [], productos_bajos = [])
     
-    return render_template("usuarios.html", usuarios = lista_usuarios)
+    return render_template("usuarios.html", usuarios = lista_usuarios, productos_bajos = listado_productos_bajos)
 
 @app.route("/usuarios/crear", methods=["GET", "POST"])
 def registrar_usuarios():
     """Recibe la informacion enviada por el formulario"""
     if request.method == "POST":
-        nombre_usuario = request.form["nombre_usuario"]
-        mail_usuario = request.form["mail_usuario"]
-        contraseña_usuario = request.form["contraseña_usuario"]
-        rol_usuario = request.form["rol_usuario"]
-        
-        sql_crear_usuario(nombre_usuario, contraseña_usuario, mail_usuario, rol_usuario)
-        return redirect("/usuarios")
+        nombre_usuario = _safe_text("nombre_usuario")
+        mail_usuario = _safe_text("mail_usuario")
+        contraseña_usuario = _safe_text("contraseña_usuario")
+        rol_usuario = _safe_text("rol_usuario")
+
+        if not nombre_usuario or not mail_usuario or not contraseña_usuario:
+            flash("Todos los campos obligatorios deben completarse.", "error")
+        else:
+            sql_crear_usuario(nombre_usuario, contraseña_usuario, mail_usuario, rol_usuario)
+            return redirect("/usuarios")
     
     
     return render_template("crear_usuario.html")
@@ -99,19 +137,22 @@ def registrar_usuarios():
 def editar_usuario(id):
     if request.method == "POST":
         """Recibo los valores enviados por el formulario"""
-        nombre_usuario = request.form["nombre_usuario"]
-        mail_usuario = request.form["mail_usuario"]
-        contraseña = request.form["contraseña_usuario"]
-        rol_usuario = request.form["rol_usuario"]
+        nombre_usuario = _safe_text("nombre_usuario")
+        mail_usuario = _safe_text("mail_usuario")
+        contraseña = _safe_text("contraseña_usuario")
+        rol_usuario = _safe_text("rol_usuario")
         
-        nueva_contraseña = contraseña if contraseña.strip() != "" else None
+        nueva_contraseña = contraseña if contraseña != "" else None
         contraseña_usuario = nueva_contraseña
         
-        """Ahora voy a actualizar los datos"""
-        if sql_actualizar_usuario(nombre_usuario, contraseña_usuario, mail_usuario, rol_usuario, id) == True:
-            return redirect("/usuarios")
+        if not nombre_usuario or not mail_usuario:
+            flash("Nombre y correo son obligatorios.", "error")
         else:
-            flash("Error al actualizar el usuario", "error")
+            """Ahora voy a actualizar los datos"""
+            if sql_actualizar_usuario(nombre_usuario, contraseña_usuario, mail_usuario, rol_usuario, id) == True:
+                return redirect("/usuarios")
+            else:
+                flash("Error al actualizar el usuario", "error")
         
     usuario_devuelto = sql_leer_usuario(id)
     
@@ -136,26 +177,35 @@ def listado_productos():
     else:
         flash("No hay productos con stock bajo", "ok")
     
-    if test_conexion == False:
-        return flash("Error al conectar con la base de datos", "warning")    
+    if not test_conexion():
+        flash("Error al conectar con la base de datos", "warning")
+        return render_template("productos.html", productos = [], productos_bajos = [])
     
-    return render_template("productos.html", productos = lista_productos)
+    return render_template("productos.html", productos = lista_productos, productos_bajos = listado_productos_bajos)
 
 @app.route("/productos/crear", methods=["GET", "POST"])
 def registrar_producto():
     """Recibe la informacion enviada por el formulario"""
     if request.method == "POST":
-        nombre_producto = request.form["nombre_producto"]
-        precio_producto = request.form["precio_producto"]
-        stok_actual_producto = request.form["stok_actual_producto"]
-        stok_minimo_producto = request.form["stok_minimo_producto"]
-        categoria_producto = request.form["idcategorias"]
-        
-        id_nuevo_producto = sql_crear_producto(nombre_producto, precio_producto, stok_actual_producto, stok_minimo_producto, categoria_producto)
-        id_usuario = session["usuario_id"]
-        sql_crear_movimientos(id_nuevo_producto, id_usuario, "ALTA", cantidad=stok_actual_producto)
-        
-        return redirect("/productos")
+        nombre_producto = _safe_text("nombre_producto")
+        precio_producto = _safe_float("precio_producto")
+        stok_actual_producto = _safe_int("stok_actual_producto")
+        stok_minimo_producto = _safe_int("stok_minimo_producto")
+        categoria_producto = _safe_int("idcategorias")
+
+        if not nombre_producto:
+            flash("El nombre del producto es obligatorio.", "error")
+        elif precio_producto < 0:
+            flash("El precio no puede ser negativo.", "error")
+        elif stok_actual_producto < 0 or stok_minimo_producto < 0:
+            flash("El stock no puede ser negativo.", "error")
+        elif categoria_producto <= 0:
+            flash("Debes seleccionar una categoría válida.", "error")
+        else:
+            id_nuevo_producto = sql_crear_producto(nombre_producto, precio_producto, stok_actual_producto, stok_minimo_producto, categoria_producto)
+            id_usuario = session["usuario_id"]
+            sql_crear_movimientos(id_nuevo_producto, id_usuario, "ALTA", cantidad=stok_actual_producto)
+            return redirect("/productos")
     
     """Carga el formulario y las opciones de categorias"""
     lista_categorias = sql_leer_categorias()
@@ -165,10 +215,13 @@ def registrar_producto():
 @app.route("/productos/crear/categoria", methods=["GET", "POST"])
 def registrar_categoria():
     if request.method == "POST":
-        nombre_categoria = request.form["nombre_categoria"]
+        nombre_categoria = _safe_text("nombre_categoria")
         
-        sql_crear_categoria(nombre_categoria)
-        return redirect("/productos")
+        if not nombre_categoria:
+            flash("El nombre de la categoría es obligatorio.", "error")
+        else:
+            sql_crear_categoria(nombre_categoria)
+            return redirect("/productos")
     
     return render_template("crear_categoria.html")
 
@@ -176,30 +229,45 @@ def registrar_categoria():
 def editar_producto(id):
     if request.method == "POST":
         """Recibo los valores enviados por el formulario"""
-        nombre_producto = request.form["nombre_producto"]
-        precio_producto = request.form["precio_producto"]
-        stok_minimo_producto = request.form["stok_minimo_producto"]
-        categoria_producto = request.form["idcategorias"]
+        nombre_producto = _safe_text("nombre_producto")
+        precio_producto = _safe_float("precio_producto")
+        stok_minimo_producto = _safe_int("stok_minimo_producto")
+        categoria_producto = _safe_int("idcategorias")
         
-        """Ahora voy a actualizar los datos"""
-        if sql_actualizar_producto(nombre_producto, precio_producto, stok_minimo_producto, categoria_producto, id) == True:
-            id_producto = id
-            id_usuario = session["usuario_id"]
-            sql_crear_movimientos(id_producto, id_usuario, "MODIFICACIÓN", cantidad=None)
-            return redirect("/productos")
+        if not nombre_producto:
+            flash("El nombre del producto es obligatorio.", "error")
+        elif precio_producto < 0:
+            flash("El precio no puede ser negativo.", "error")
+        elif stok_minimo_producto < 0:
+            flash("El stock mínimo no puede ser negativo.", "error")
+        elif categoria_producto <= 0:
+            flash("Debes seleccionar una categoría válida.", "error")
         else:
-            flash("Error al actualizar el producto", "error")
+            """Ahora voy a actualizar los datos"""
+            if sql_actualizar_producto(nombre_producto, precio_producto, stok_minimo_producto, categoria_producto, id) == True:
+                id_producto = id
+                id_usuario = session["usuario_id"]
+                sql_crear_movimientos(id_producto, id_usuario, "MODIFICACIÓN", cantidad=None)
+                return redirect("/productos")
+            else:
+                flash("Error al actualizar el producto", "error")
         
     producto_devuelto = sql_leer_producto(id)
     lista_categorias = sql_leer_categorias()
     
     return render_template("editar_producto.html", producto = producto_devuelto, categorias = lista_categorias) 
 
-@app.route("/productos/aumentar/<int:id>")
+@app.route("/productos/aumentar/<int:id>", methods=["GET", "POST"])
 def aumentar_cantidad(id):
-    if request.form == "POST":
-        cantidad_a_sumar = request.form["nuevo_stock"]
-    
+    producto_devuelto = sql_leer_producto(id)
+
+    if request.method == "POST":
+        cantidad_a_sumar = _safe_int("nuevo_stock")
+
+        if cantidad_a_sumar <= 0:
+            flash("La cantidad a sumar debe ser mayor a cero.", "error")
+            return render_template("aumentar_producto.html", producto = producto_devuelto)
+
         if sql_aumentar_cantidad(id, cantidad_a_sumar):
             id_producto = id
             id_usuario = session["usuario_id"]
@@ -207,25 +275,24 @@ def aumentar_cantidad(id):
             return redirect("/productos")
         else:
             flash("Error al actualizar el producto", "error")
+
+    return render_template("aumentar_producto.html", producto = producto_devuelto)
     
-    producto_devuelto = sql_leer_producto(id)
-    return render_template("aumentar_cantidad.html", producto = producto_devuelto)
-    
-@app.route("/productos/decrementar/<int:id>")
+@app.route("/productos/decrementar/<int:id>", methods=["GET", "POST"])
 def decrementar_cantidad(id):
     
     producto_devuelto = sql_leer_producto(id)
     
-    if request.form == "POST":
-        cantidad_a_restar = int(request.form["nuevo_stock"])
+    if request.method == "POST":
+        cantidad_a_restar = _safe_int("nuevo_stock")
         
         if cantidad_a_restar > producto_devuelto["stock_actual"]:
             flash(f"Error: No puedes retirar {cantidad_a_restar} unidades. El stock actual es de {producto_devuelto['stock_actual']}.", "error")
-            return render_template("decrementar_cantidad.html", producto = producto_devuelto)
+            return render_template("decrementar_producto.html", producto = producto_devuelto)
         
         elif cantidad_a_restar <= 0:
             flash("Error: La cantidad a retirar debe ser mayor a cero.", "error")
-            return render_template("decrementar_cantidad.html", producto = producto_devuelto)
+            return render_template("decrementar_producto.html", producto = producto_devuelto)
     
         if sql_decrementar_cantidad(id, cantidad_a_restar):
             id_producto = id
@@ -236,7 +303,7 @@ def decrementar_cantidad(id):
             flash("Error al actualizar el producto", "error")
     
     
-    return render_template("decrementar_cantidad.html", producto = producto_devuelto)
+    return render_template("decrementar_producto.html", producto = producto_devuelto)
 
 
 @app.route("/productos/eliminar/<int:id>")
@@ -254,8 +321,9 @@ def eliminar_producto(id):
 @app.route("/historial_movimiento")
 def listado_historial():
     
-    if test_conexion == False:
-        return flash("Error al conectar con la base de datos", "warning")    
+    if not test_conexion():
+        flash("Error al conectar con la base de datos", "warning")
+        return render_template("historial_movimiento.html", movimientos = [])
 
     listado_historial = sql_leer_movimientos()
     return render_template("historial_movimiento.html", movimientos = listado_historial)

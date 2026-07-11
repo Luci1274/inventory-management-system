@@ -1,5 +1,6 @@
 from werkzeug.security import check_password_hash, generate_password_hash 
 from modulos.conexion import conectar_db
+
 #-------------------------------------------------------------------
 def sql_leer_usuarios():
     """Lee la tabla de usuarios y devuele el listado"""

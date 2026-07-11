@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cloudflare.com">
+    <link rel="stylesheet" href="/static/css/formularios.css">
     <title>Modificar producto</title>
 </head>
 <body>
@@ -22,19 +23,15 @@
 
                 <label for="nombre_producto">Introduce el nombre del producto</label>
                 <input type="text" name="nombre_producto" id="nombre_producto" value="{{producto.nombre}}" required>
-                <br>
 
                 <label for="precio_producto">Intro duce el precio del producto</label>
                 <input type="number" name="precio_producto" id="precio_producto" placeholder="Introduce el precio" value="{{producto.precio}}" required>
-                <br>
 
                 <label for="stok_actual_producto">Stock actual del producto</label>
                 <input type="number" name="stok_actual_producto" id="stok_actual_producto" readonly value="{{producto.stock_actual}}" required>
-                <br>
 
                 <label for="stok_minimo_producto">Ingrese el stock mínimo para ser notificado</label>
                 <input type="number" name="stok_minimo_producto" id="stok_minimo_producto" placeholder="Mínima cantidad de producto para ser notificado" value="{{producto.stock_minimo}}" required>
-                <br>
 
                 <label for="idcategorias">Categorías</label>
                 <select name="idcategorias" id="idcategorias" required>
@@ -44,7 +41,6 @@
                         </option>
                     {% endfor %}
                 </select>
-                <br>
 
                 <button type="submit">Actualizar producto</button>
             </form>

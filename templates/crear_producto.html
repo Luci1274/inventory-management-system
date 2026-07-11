@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cloudflare.com">
+    <link rel="stylesheet" href="/static/css/formularios.css">
 
     <title>Crear Producto</title>
 </head>
@@ -12,24 +13,20 @@
         <header><h1>Agregar producto</h1></header>
 
         <main>
-            <button><a href="/productos"><i class="fa-solid fa-arrow-left"></i> Regresar</a></button>
+            <a href="/productos"><i class="fa-solid fa-arrow-left"></i> Regresar</a>
             
             <form action="/productos/crear" method="POST">
                 <label for="nombre_producto">Introduce el nombre del producto</label>
-                <input type="text" name="nombre_producto" id="nombre_producto" required>
-                <br>
+                <input type="text" name="nombre_producto" id="nombre_producto" placeholder="Introduce el nombre del producto" required>
 
                 <label for="precio_producto">Introduzca el precio del producto</label>
                 <input type="number" name="precio_producto" id="precio_producto" placeholder="Introduce el precio" required>
-                <br>
 
                 <label for="stok_actual_producto">Ingrese el stock actual del producto</label>
                 <input type="number" name="stok_actual_producto" id="stok_actual_producto" min="0" placeholder="Ingrese la cantidad actual del producto">
-                <br>
 
                 <label for="stok_minimo_producto">Ingrese el stock mínimo para ser notificado</label>
                 <input type="number" name="stok_minimo_producto" id="stok_minimo_producto" required placeholder="Mínima cantidad de producto para ser notificado">
-                <br>
 
                 <label for="idcategorias">Categorías</label>
                 <select name="idcategorias" id="idcategorias" required>
@@ -38,7 +35,6 @@
                         <option value="{{cat.idcategorias}}">{{cat.nombre}}</option>
                     {% endfor %}
                 </select>
-                <br>
                 
                 <button type="submit">Guardar nuevo producto</button>
 
