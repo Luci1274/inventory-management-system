@@ -43,7 +43,7 @@ def sql_crear_producto(nombre_producto, precio_producto, stok_actual_producto, s
     valores = (nombre_producto, precio_producto, stok_actual_producto, stok_minimo_producto, categoria_producto)
     cursor.execute(sql, valores)
     conexion.commit()
-    id_nuevo_producto = cursor.lastrowid()
+    id_nuevo_producto = cursor.lastrowid
     cursor.close()
     conexion.close()
     return id_nuevo_producto
@@ -85,7 +85,7 @@ def sql_eliminar_producto(id):
     cursor = conexion.cursor()
     """Intenta borrar el producto seleccionado"""
     try:    
-        cursor.execute("UPADATE productos SET activo = 0 WHERE idproductos = %s;", (id,))
+        cursor.execute("UPDATE productos SET activo = 0 WHERE idproductos = %s;", (id,))
         conexion.commit()
     except Exception as e:
         """En el caso de haber un error deshace los cambios"""

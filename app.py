@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect, session, flash, jsonify
-from modulos.conexion import conectar_db
 from modulos.comandos_db_producto import sql_leer_productos, sql_leer_producto, sql_leer_categorias, sql_crear_producto, sql_crear_categoria, sql_actualizar_producto, sql_eliminar_producto, sql_aumentar_cantidad, sql_decrementar_cantidad
 from modulos.comandos_db_usuario import sql_leer_usuarios, sql_leer_usuario, sql_crear_usuario, sql_actualizar_usuario, sql_eliminar_usuario, sql_verificar_usuario
 from modulos.comandos_db_alerta import sql_alertar_stock, test_conexion
@@ -7,6 +6,8 @@ from modulos.comandos_db_movimientos import sql_leer_movimientos, sql_crear_movi
 
 app = Flask(__name__)
 app.secret_key = "una_clave_secreta_y_segura_aqui"
+
+
 
 # ---------------------------------------------------------------------------------------------
 # 🛡️ GUARDIA DE SEGURIDAD (Control de Sesiones)
@@ -30,10 +31,10 @@ def index():
     else:
         flash("No hay productos con stock bajo", "ok")
     
-    if test_conexion == False:
+    if not test_conexion:
         return flash("Error al conectar con la base de datos", "warning")    
     
-    return render_template("index.html", productos = listado_productos_bajos)
+    return render_template("index.html", productos_bajos = listado_productos_bajos)
 
 # ---------------------------------------------------------------------------------------------
 # Login, administración de usuarios y registro de estos
@@ -75,10 +76,10 @@ def listado_usuarios():
     else:
         flash("No hay productos con stock bajo", "ok")
     
-    if test_conexion == False:
+    if not test_conexion:
         return flash("Error al conectar con la base de datos", "warning")    
     
-    return render_template("usuarios.html", usuarios = lista_usuarios)
+    return render_template("usuarios.html", usuarios = lista_usuarios, productos_bajos = listado_productos_bajos)
 
 @app.route("/usuarios/crear", methods=["GET", "POST"])
 def registrar_usuarios():
@@ -136,20 +137,20 @@ def listado_productos():
     else:
         flash("No hay productos con stock bajo", "ok")
     
-    if test_conexion == False:
+    if not test_conexion:
         return flash("Error al conectar con la base de datos", "warning")    
     
-    return render_template("productos.html", productos = lista_productos)
+    return render_template("productos.html", productos = lista_productos, productos_bajos = listado_productos_bajos)
 
 @app.route("/productos/crear", methods=["GET", "POST"])
 def registrar_producto():
     """Recibe la informacion enviada por el formulario"""
     if request.method == "POST":
         nombre_producto = request.form["nombre_producto"]
-        precio_producto = request.form["precio_producto"]
-        stok_actual_producto = request.form["stok_actual_producto"]
-        stok_minimo_producto = request.form["stok_minimo_producto"]
-        categoria_producto = request.form["idcategorias"]
+        precio_producto = float(request.form.get("precio_producto", 0) or 0)
+        stok_actual_producto = int(request.form.get("stok_actual_producto", 0) or 0)
+        stok_minimo_producto = int(request.form.get("stok_minimo_producto", 0) or 0)
+        categoria_producto = int(request.form["idcategorias"])
         
         id_nuevo_producto = sql_crear_producto(nombre_producto, precio_producto, stok_actual_producto, stok_minimo_producto, categoria_producto)
         id_usuario = session["usuario_id"]
@@ -254,7 +255,7 @@ def eliminar_producto(id):
 @app.route("/historial_movimiento")
 def listado_historial():
     
-    if test_conexion == False:
+    if not test_conexion:
         return flash("Error al conectar con la base de datos", "warning")    
 
     listado_historial = sql_leer_movimientos()

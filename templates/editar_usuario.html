@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cloudflare.com">
+    <link rel="stylesheet" href="/static/css/formularios.css">
     <title>Modificar usuario</title>
 </head>
 <body>
@@ -30,22 +31,18 @@
 
                 <label for="nombre_usuario">Nombre de Usuario:</label>
                 <input type="text" name="nombre_usuario" id="nombre_usuario" value="{{ usuario.nombre }}" required>
-                <br>
 
                 <label for="mail_usuario">Email:</label>
                 <input type="email" name="mail_usuario" id="mail_usuario" value="{{ usuario.email }}" required>
-                <br>
 
                 <label for="contraseña_usuario">Nueva Contraseña:</label>
                 <input type="password" name="contraseña_usuario" id="contraseña_usuario" placeholder="Dejar en blanco para mantener la actual">
-                <br>
 
                 <label for="rol_usuario">Rol:</label>
                 <select name="rol_usuario" id="rol_usuario" required>
                     <option value="operario" {% if usuario.rol == 'operario' %} selected {% endif %}>Operario</option>
                     <option value="admin" {% if usuario.rol == 'admin' %} selected {% endif %}>Administrador</option>
                 </select>
-                <br>
 
                 <button type="submit">Guardar Cambios</button>
             </form>

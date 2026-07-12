@@ -1,0 +1,163 @@
+:root {
+    --color_fondo: rgb(37, 37, 37);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color_fondo);
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-areas:
+    "header"
+    "mensajes_tabla"
+    "main";
+    place-items: center;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    grid-area: header ;
+    background-color: black;
+    border-bottom: 1px solid gray;
+    box-shadow: inset 0px -5px 10px 0px gray;
+    color: white;
+    align-items: center;
+}
+
+header nav {
+    display: flex;
+    flex-direction: row;
+}
+
+a {
+    background-color: black;
+    color: white;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+    font-size: 18px;
+    text-decoration: none;
+}
+
+a:hover {
+    background-color: gray;
+    color: blue;
+}
+
+.mensajes_tabla {
+    grid-area: mensajes_tabla;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-rows: repeat(auto-fit, minmax(250px, 1fr));
+    background-color: var(--color_fondo);
+    color: white;
+
+}
+
+.mensajes_tabla .mensaje {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px;
+    background-color: black;
+}
+
+.mensajes_tabla .mensaje h2 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.mensajes_tabla .mensaje p {
+    margin: 0;
+    font-size: 18px;
+}
+
+.mensajes_tabla .tabla_stock_bajo {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-rows: repeat(auto-fit, minmax(250px, 1fr));
+    background-color: var(--color_fondo);
+    color: white;
+    margin: 10px;
+}
+
+.mensajes_tabla .tabla_stock_bajo #fila_stock_bajo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px;
+    background-color: black;
+}
+
+main {
+    grid-area: main;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.opciones {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: center;
+    gap: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 5px solid black;
+    color: white;
+}
+
+table thead {
+    background-color: black;
+    color: white;
+}
+
+table tbody {
+    background-color: var(--color_fondo);
+    color: white;
+}
+
+table th, table td {
+    border: 1px solid black;
+    padding: 10px;
+    text-align: left;
+    font-size: 18px;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-areas:
+        "header"
+        "mensajes_tabla"
+        "main";
+    }
+}
+
