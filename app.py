@@ -10,15 +10,51 @@ app.secret_key = "una_clave_secreta_y_segura_aqui"
 
 
 # ---------------------------------------------------------------------------------------------
-# 🛡️ GUARDIA DE SEGURIDAD (Control de Sesiones)
+# 🛡️ GUARDIA DE SEGURIDAD (Control de Sesiones y Roles)
 # ---------------------------------------------------------------------------------------------
 @app.before_request
 def proteger_rutas():
-    rutas_publicas = ["iniciar_sesion", "test_conexion", "static"]
-    # Evita que falle si se busca un archivo o ruta inexistente
-    if request.endpoint and request.endpoint not in rutas_publicas and "usuario_id" not in session:
-        flash("Debes iniciar sesión para acceder al sistema.", "warning")
+    rutas_publicas = ["iniciar_sesion", "static"]
+    
+    # Ruta no existe o es pública
+    if not request.endpoint or request.endpoint in rutas_publicas:
+        return
+        
+    # Control de autenticación general
+    if "usuario_id" not in session:
+        flash("Debes iniciar sesión para acceder al sistema", "warning")
         return redirect("/iniciar_sesion")
+        
+    # Mapeo de accesos utilizando el NOMBRE DE LAS FUNCIONES
+    permisos_roles = {
+        "admin": [
+            "index", 
+            "listado_usuarios", "registrar_usuarios", "editar_usuario", "eliminar_usuario",
+            "listado_productos", "registrar_producto", "registrar_categoria", "editar_producto", 
+            "aumentar_cantidad", "decrementar_cantidad", "eliminar_producto",
+            "listado_historial"
+        ],
+        "operario": [
+            "index",  # El operario necesita ver la raíz para usar el menú
+            "listado_productos", "registrar_producto", "registrar_categoria", "editar_producto", 
+            "aumentar_cantidad", "decrementar_cantidad", "eliminar_producto"
+        ]
+    }
+    
+    rol_usuario = session.get("rol")
+    ruta_actual = request.endpoint  # Contiene el nombre de la función (ej: "listado_usuarios")
+    
+    # Verificamos si la función actual está contemplada en nuestro sistema de permisos
+    ruta_protegida = any(ruta_actual in rutas for rutas in permisos_roles.values())
+    
+    if ruta_protegida:
+        rutas_permitidas = permisos_roles.get(rol_usuario, [])
+        
+        # Si el rol del usuario no tiene esta función en su lista, lo rebotamos
+        if ruta_actual not in rutas_permitidas:
+            flash("No tienes permisos suficientes para acceder a esta sección.", "warning")
+            return redirect("/")
+        
 
 # ---------------------------------------------------------------------------------------------
 # Index = Menu principal
@@ -28,8 +64,7 @@ def index():
     listado_productos_bajos = sql_alertar_stock()
     if listado_productos_bajos:
         flash("Productos bajos en stock", "warning" )
-    else:
-        flash("No hay productos con stock bajo", "ok")
+
     
     if not test_conexion:
         return flash("Error al conectar con la base de datos", "warning")    
@@ -196,7 +231,7 @@ def editar_producto(id):
     
     return render_template("editar_producto.html", producto = producto_devuelto, categorias = lista_categorias) 
 
-@app.route("/productos/aumentar/<int:id>")
+@app.route("/productos/aumentar/<int:id>", methods=["GET", "POST"])
 def aumentar_cantidad(id):
     if request.form == "POST":
         cantidad_a_sumar = request.form["nuevo_stock"]
@@ -212,7 +247,7 @@ def aumentar_cantidad(id):
     producto_devuelto = sql_leer_producto(id)
     return render_template("aumentar_cantidad.html", producto = producto_devuelto)
     
-@app.route("/productos/decrementar/<int:id>")
+@app.route("/productos/decrementar/<int:id>", methods=["GET", "POST"])
 def decrementar_cantidad(id):
     
     producto_devuelto = sql_leer_producto(id)
