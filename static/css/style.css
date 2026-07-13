@@ -33,12 +33,19 @@ header {
     border-bottom: 1px solid gray;
     box-shadow: inset 0px -5px 10px 0px gray;
     color: white;
-    align-items: center;
 }
 
 header nav {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     flex-direction: row;
+    gap: 5px;
+    padding: 10px 0;
+}
+
+header nav a {
+    white-space: nowrap;
 }
 
 a {
@@ -46,9 +53,9 @@ a {
     color: white;
     border: 1px solid gray;
     border-radius: 5px;
-    padding: 5px;
+    padding: 5px 10px;
     margin: 5px;
-    font-size: 18px;
+    font-size: 16px;
     text-decoration: none;
 }
 
@@ -120,9 +127,16 @@ main {
 .opciones {
     display: flex;
     flex-direction: row;
-    justify-content: end;
+    justify-content: flex-end;
     align-items: center;
     gap: 10px;
+    flex-wrap: wrap;
+}
+
+.opciones a {
+    flex: 1 1 auto;
+    min-width: 180px;
+    text-align: center;
 }
 
 table {
@@ -130,6 +144,20 @@ table {
     border-collapse: collapse;
     border: 5px solid black;
     color: white;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+table thead,
+ table tbody {
+    display: table;
+    width: 100%;
+}
+
+table tbody {
+    overflow-x: auto;
 }
 
 table thead {
@@ -144,10 +172,15 @@ table tbody {
 
 table th, table td {
     border: 1px solid black;
-    padding: 10px;
     text-align: left;
     font-size: 18px;
     text-align: center;
+    height: 70px;
+    padding: 10px;
+}
+
+table td a {
+    gap: 100px;
 }
 
 @media (max-width: 768px) {
@@ -158,6 +191,40 @@ table th, table td {
         "header"
         "mensajes_tabla"
         "main";
+        padding: 0 10px;
+    }
+
+    header nav {
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .opciones {
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: center;
+    }
+
+    .opciones a {
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    table th,
+    table td {
+        font-size: 14px;
+        padding: 8px;
+        height: auto;
+    }
+
+    table th {
+        font-size: 15px;
     }
 }
 
