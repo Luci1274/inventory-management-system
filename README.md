@@ -1,29 +1,20 @@
-# Inventory Management System
+# Inventory Management System 🍦
 
-Sistema web de gestión de inventario desarrollado con Flask, MySQL y JavaScript vanilla. Permite administrar productos, categorías y stock de forma sencilla desde una interfaz web.
+Sistema web de gestión de inventario y control de stock desarrollado con Flask, MySQL y JavaScript vanilla. Permite administrar productos, categorías, usuarios y registrar el historial de movimientos en tiempo real desde una interfaz web moderna y responsiva.
 
-## Descripción general
+## 🚀 Descripción general
 
-Este proyecto nace como una aplicación básica para controlar los productos de un negocio, mostrando información como:
+Este proyecto es un MVP (Mínimo Viable Producto) diseñado para resolver la gestión de inventario de un negocio real (como una heladería). No solo permite el clásico ABM (CRUD) de productos, sino que también integra un sistema de seguridad con sesiones y un registro automatizado de auditoría para cada entrada y salida de mercancía.
 
-- nombre del producto
-- precio
-- stock actual
-- stock mínimo
-- categoría asociada
+## 🛠️ Tecnologías utilizadas
 
-También incluye operaciones CRUD para los productos: crear, leer, editar y eliminar.
+- **Backend:** Python 3 (Flask, Jinja2, PyMySQL)
+- **Seguridad:** Werkzeug (Encriptación de contraseñas con Hash)
+- **Base de Datos:** MySQL (Alojada en la nube con **Aiven**)
+- **Frontend:** HTML5, CSS3 (Diseño responsivo Dark Mode)
+- **Despliegue:** **Render** (Alojamiento del servicio web de Flask)
 
-## Tecnologías utilizadas
-
-- Python 3
-- Flask
-- Jinja2
-- PyMySQL
-- MySQL
-- HTML, CSS y JavaScript vanilla
-
-## Estructura del proyecto
+## 📁 Estructura del proyecto
 
 ```text
 inventory-management-system/
@@ -38,11 +29,13 @@ inventory-management-system/
 │   ├── css/
 │   └── js/
 └── templates/
-    ├── crear_producto.html
-    ├── editar_producto.html
-    ├── index.html
-    └── productos.html
-```
+    ├── index.html            # Dashboard con alertas de stock crítico
+    ├── login.html            # Pantalla de acceso seguro
+    ├── registro.html         # Registro de nuevos empleados
+    ├── productos.html        # Listado, acciones rápidas e incremento de stock
+    ├── crear_producto.html   
+    ├── editar_producto.html  
+    └── movimientos.html      # Historial de auditoría
 
 ## Funcionalidades actuales
 
@@ -76,7 +69,7 @@ pip install -r requirements.txt
 2. Importa el archivo [database.sql](database.sql) para crear las tablas.
 3. Ajusta los datos de conexión en [modulos/conexion.py](modulos/conexion.py) si tu usuario, contraseña o nombre de la base de datos son diferentes.
 
-## Ejecución
+## Ejecución local
 
 Desde la raíz del proyecto, ejecuta:
 
@@ -89,6 +82,17 @@ Luego abre en tu navegador:
 ```text
 http://localhost:5000
 ```
+
+## Despliegue en producción
+
+La aplicación está preparada para ser desplegada en Render, donde se aloja el servicio web de Flask. La base de datos MySQL se gestiona en Aiven, usando una instancia en la nube para mantener la información de forma persistente.
+
+Para desplegarla en Render:
+
+1. Crea un servicio web en Render apuntando al repositorio del proyecto.
+2. Configura la variable de entorno necesaria para la conexión a la base de datos.
+3. Asegúrate de que la instancia de MySQL en Aiven sea accesible desde Render.
+4. Importa el esquema de la base de datos desde [database.sql](database.sql) en la instancia de Aiven.
 
 ## Rutas principales
 

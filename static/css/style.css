@@ -33,12 +33,19 @@ header {
     border-bottom: 1px solid gray;
     box-shadow: inset 0px -5px 10px 0px gray;
     color: white;
-    align-items: center;
 }
 
 header nav {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     flex-direction: row;
+    gap: 5px;
+    padding: 10px 0;
+}
+
+header nav a {
+    white-space: nowrap;
 }
 
 a {
@@ -46,9 +53,9 @@ a {
     color: white;
     border: 1px solid gray;
     border-radius: 5px;
-    padding: 5px;
+    padding: 5px 10px;
     margin: 5px;
-    font-size: 18px;
+    font-size: 16px;
     text-decoration: none;
 }
 
@@ -59,55 +66,91 @@ a:hover {
 
 .mensajes_tabla {
     grid-area: mensajes_tabla;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    grid-template-rows: repeat(auto-fit, minmax(250px, 1fr));
-    background-color: var(--color_fondo);
-    color: white;
-
-}
-
-.mensajes_tabla .mensaje {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid gray;
-    border-radius: 5px;
-    padding: 10px;
-    margin: 10px;
-    background-color: black;
-}
-
-.mensajes_tabla .mensaje h2 {
-    margin: 0;
-    font-size: 24px;
-}
-
-.mensajes_tabla .mensaje p {
-    margin: 0;
-    font-size: 18px;
-}
-
-.mensajes_tabla .tabla_stock_bajo {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    grid-template-rows: repeat(auto-fit, minmax(250px, 1fr));
-    background-color: var(--color_fondo);
+    align-items: stretch;
+    gap: 12px;
+    width: 100%;
+    max-width: 1200px;
+    background-color: #111;
     color: white;
-    margin: 10px;
+    padding: 14px;
+    border: 1px solid #333;
+    border-radius: 12px;
+    margin: 10px 0;
 }
 
-.mensajes_tabla .tabla_stock_bajo #fila_stock_bajo {
+.alert-container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    gap: 10px;
+}
+
+.alert {
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.alert-warning {
+    background-color: #3a1f0e;
+    border-color: #8b5b2f;
+    color: #ffdba3;
+}
+
+.alert-success {
+    background-color: #16321e;
+    border-color: #3d8552;
+    color: #c6f2cb;
+}
+
+.alert-info {
+    background-color: #102639;
+    border-color: #356794;
+    color: #cfe1ff;
+}
+
+.tabla_stock_bajo {
+    display: grid;
+    gap: 10px;
+    background-color: #000;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.tabla_stock_bajo h3 {
+    margin: 0;
+    color: #ff7979;
+    font-size: 1.15rem;
+    letter-spacing: 0.03em;
+}
+
+.fila_stock_bajo {
+    display: grid;
+    grid-template-columns: 1.8fr 0.6fr 1fr;
+    gap: 12px;
     align-items: center;
-    border: 1px solid gray;
-    border-radius: 5px;
-    padding: 10px;
-    margin: 10px;
-    background-color: black;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background-color: #121212;
+    border: 1px solid #222;
+}
+
+.fila_stock_bajo.header {
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #ddd;
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.fila_stock_bajo div {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 main {
@@ -120,9 +163,16 @@ main {
 .opciones {
     display: flex;
     flex-direction: row;
-    justify-content: end;
+    justify-content: flex-end;
     align-items: center;
     gap: 10px;
+    flex-wrap: wrap;
+}
+
+.opciones a {
+    flex: 1 1 auto;
+    min-width: 180px;
+    text-align: center;
 }
 
 table {
@@ -130,6 +180,20 @@ table {
     border-collapse: collapse;
     border: 5px solid black;
     color: white;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+table thead,
+ table tbody {
+    display: table;
+    width: 100%;
+}
+
+table tbody {
+    overflow-x: auto;
 }
 
 table thead {
@@ -144,10 +208,15 @@ table tbody {
 
 table th, table td {
     border: 1px solid black;
-    padding: 10px;
     text-align: left;
     font-size: 18px;
     text-align: center;
+    height: 70px;
+    padding: 10px;
+}
+
+table td a {
+    gap: 100px;
 }
 
 @media (max-width: 768px) {
@@ -158,6 +227,40 @@ table th, table td {
         "header"
         "mensajes_tabla"
         "main";
+        padding: 0 10px;
+    }
+
+    header nav {
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .opciones {
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: center;
+    }
+
+    .opciones a {
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    table th,
+    table td {
+        font-size: 14px;
+        padding: 8px;
+        height: auto;
+    }
+
+    table th {
+        font-size: 15px;
     }
 }
 

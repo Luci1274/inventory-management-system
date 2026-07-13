@@ -13,6 +13,8 @@
             {% include "componentes/nav.html" %}
         </header>
         <main>
+            {% include "componentes/tabla_aviso_stock_bajo.html" %}
+
             <div class="opciones">
                 <a href="/productos/crear">Ingresar nuevo producto</a>
                 <a href="/productos/crear/categoria">Ingresar una nueva categoría</a>
@@ -23,7 +25,8 @@
                         <th>Nombre</th>
                         <th>Precio</th>
                         <th>Stock actual</th>
-                        <th>Categoría</th> 
+                        <th>Categoría</th>
+                        <th>Acciones stock</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -34,6 +37,10 @@
                             <td>{{producto.precio}}</td>
                             <td>{{producto.stock_actual}}</td>
                             <td>{{producto.categoria}}</td>
+                            <td>
+                                <a href="/productos/aumentar/{{producto.idproductos}}">Incrementar</a>
+                                <a href="/productos/decrementar/{{producto.idproductos}}">Decrementar</a>
+                            </td>
                             <td>
                                 <a href="/productos/editar/{{producto.idproductos}}">Editar</a>
                                 <a href="/productos/eliminar/{{producto.idproductos}}">Eliminar</a>
