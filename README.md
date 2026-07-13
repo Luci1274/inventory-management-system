@@ -22,6 +22,8 @@ También incluye operaciones CRUD para los productos: crear, leer, editar y elim
 - PyMySQL
 - MySQL
 - HTML, CSS y JavaScript vanilla
+- Render para el alojamiento de la aplicación web
+- Aiven para la base de datos MySQL en la nube
 
 ## Estructura del proyecto
 
@@ -76,7 +78,7 @@ pip install -r requirements.txt
 2. Importa el archivo [database.sql](database.sql) para crear las tablas.
 3. Ajusta los datos de conexión en [modulos/conexion.py](modulos/conexion.py) si tu usuario, contraseña o nombre de la base de datos son diferentes.
 
-## Ejecución
+## Ejecución local
 
 Desde la raíz del proyecto, ejecuta:
 
@@ -89,6 +91,17 @@ Luego abre en tu navegador:
 ```text
 http://localhost:5000
 ```
+
+## Despliegue en producción
+
+La aplicación está preparada para ser desplegada en Render, donde se aloja el servicio web de Flask. La base de datos MySQL se gestiona en Aiven, usando una instancia en la nube para mantener la información de forma persistente.
+
+Para desplegarla en Render:
+
+1. Crea un servicio web en Render apuntando al repositorio del proyecto.
+2. Configura la variable de entorno necesaria para la conexión a la base de datos.
+3. Asegúrate de que la instancia de MySQL en Aiven sea accesible desde Render.
+4. Importa el esquema de la base de datos desde [database.sql](database.sql) en la instancia de Aiven.
 
 ## Rutas principales
 

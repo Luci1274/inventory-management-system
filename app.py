@@ -108,8 +108,6 @@ def listado_usuarios():
     listado_productos_bajos = sql_alertar_stock()
     if listado_productos_bajos:
         flash("Productos bajos en stock", "warning" )
-    else:
-        flash("No hay productos con stock bajo", "ok")
     
     if not test_conexion:
         return flash("Error al conectar con la base de datos", "warning")    
@@ -169,8 +167,6 @@ def listado_productos():
     listado_productos_bajos = sql_alertar_stock()
     if listado_productos_bajos:
         flash("Productos bajos en stock", "warning" )
-    else:
-        flash("No hay productos con stock bajo", "ok")
     
     if not test_conexion:
         return flash("Error al conectar con la base de datos", "warning")    
