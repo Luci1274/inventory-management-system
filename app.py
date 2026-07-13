@@ -233,19 +233,40 @@ def editar_producto(id):
 
 @app.route("/productos/aumentar/<int:id>", methods=["GET", "POST"])
 def aumentar_cantidad(id):
-    if request.form == "POST":
-        cantidad_a_sumar = request.form["nuevo_stock"]
+    if "usuario_id" not in session:
+        return jsonify({"status": "error", "message": "Sesión expirada"}), 401
     
-        if sql_aumentar_cantidad(id, cantidad_a_sumar):
-            id_producto = id
-            id_usuario = session["usuario_id"]
-            sql_crear_movimientos(id_producto, id_usuario, "INGRESO", cantidad=cantidad_a_sumar)
-            return redirect("/productos")
-        else:
-            flash("Error al actualizar el producto", "error")
+    
+    
+    if request.method == "POST":
+        try:
+            cantidad_a_sumar = int(request.form.get("nuevo_stock",0))
+            
+            if cantidad_a_sumar <= 0:
+                return jsonify({"status": "error", "message": "La cantidad debe ser mayor a cero"}), 400
+        
+            if sql_aumentar_cantidad(id, cantidad_a_sumar):
+                id_usuario = session["usuario_id"]
+                sql_crear_movimientos(id, id_usuario, "INGRESO", cantidad=cantidad_a_sumar)
+            
+                producto_actualizado = sql_leer_producto(id)
+                nuevo_stock_total = producto_actualizado["stock_actual"]
+                
+                return jsonify({
+                    "status": "success",
+                    "messege": "Stock incrementado correctamente",
+                    "nuevo_stock": nuevo_stock_total
+                })
+            else:
+                return jsonify({"status": "error", "message": "No se pudo actualizar en la base de datos"}), 500
+        except Exception as e:
+            print("Error en API aumentar stock:", e)
+            return jsonify({"status": "error", "message": "Error interno del servidor"}), 500
     
     producto_devuelto = sql_leer_producto(id)
-    return render_template("aumentar_cantidad.html", producto = producto_devuelto)
+    return render_template("aumentar_producto.html", producto = producto_devuelto)
+    
+
     
 @app.route("/productos/decrementar/<int:id>", methods=["GET", "POST"])
 def decrementar_cantidad(id):

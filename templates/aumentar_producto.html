@@ -14,11 +14,13 @@
             <p>Los valores mostrados son los actuales del producto.</p>
         </header>
         <main>
-            {% include "componentes/aviso.html" %}
+            
+            <div id="mensaje-js" style="display: none; padding: 10px; margin-bottom: 15px; font-weight: bold; border-radius: 5px;"></div>
 
-            <button><a href="/productos"><i class="fa-solid fa-arrow-left"></i> Regresar</a></button>
+            <a href="/productos"><i class="fa-solid fa-arrow-left"></i> Regresar</a>
 
-            <form action="" method="POST">
+            
+            <form id="form-aumentar" action="/productos/aumentar/{{ producto.idproductos }}" method="POST">
                 <input type="hidden" name="id_producto" value="{{ producto.idproductos }}">
 
                 <label for="nombre_producto">Nombre del producto</label>
@@ -31,5 +33,7 @@
             </form>
         </main>
     </div>
+
+    <script src="/static/js/aumentar_producto.js"></script>
 </body>
 </html>
