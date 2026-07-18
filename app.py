@@ -250,7 +250,7 @@ def aumentar_cantidad(id):
                 
                 return jsonify({
                     "status": "success",
-                    "messege": "Stock incrementado correctamente",
+                    "message": "Stock incrementado correctamente",
                     "nuevo_stock": nuevo_stock_total
                 })
             else:
